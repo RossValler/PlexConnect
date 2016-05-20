@@ -165,7 +165,7 @@
            <title>{{TEXT(Recently Added)}} • {{VAL(name)}}{{VAL(local::0= &lt;{{TEXT(remote)}}&gt;|0 =)}}</title>{{CUT(@main/size:CUT:1=CUT|2=)}}
         </collectionDivider>{{CUT(@RecentlyAdded/Server/size:CUT:0=CUT|1=)}}{{CUT($library_recentlyadded::Show=|Hide=CUT)}}
 
-        <shelf id="shelf_2" columnCount="7">
+        <shelf id="shelf_2" columnCount="6">
           <sections>
             <shelfSection>
               <items>

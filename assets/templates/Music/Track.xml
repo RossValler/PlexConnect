@@ -12,8 +12,9 @@
               {{URL(:/fanartcache/{{getBackground({{EVAL({\
               'title'       : "{{VAL(title1:Plex Mix)}}",\
               'subtitle'    : "{{VAL(title2)}}",\
+              'image'       : "{{IMAGEURL(art:::)}}",\
               'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
-              'layers'      : ["PlexSubList"]\
+              'layers'      : ["PlexSubList{{VAL($fanarttint::On=Text|Off=)}}"]\
               })}})}})}}
 	      </image>
 	    </imageHeader>
