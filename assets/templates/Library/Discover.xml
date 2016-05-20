@@ -5,7 +5,7 @@
   </head>
 
   <body>
-      {{ADDXML(OnDeck::/library/onDeck?X-Plex-Container-Start=0&amp;X-Plex-Container-Size=15)}}
+      {{ADDXML(OnDeck::/library/onDeck?X-Plex-Container-Start=0&amp;X-Plex-Container-Size=40)}}
       {{ADDXML(RecentlyAdded::/library/recentlyAdded?X-Plex-Container-Start=0&amp;X-Plex-Container-Size=40)}}
       {{VAR(sections:NoKey:FALSE)}}  <!--this sets the var to FALSE-->
       {{VAR(items:NoKey:FALSE)}}
@@ -40,7 +40,7 @@
             <!-- /library/sections -->
             {{VAR(serverName:name)}}
             {{VAR(searchKey:searchKey)}}
-              <moviePoster id="{{VAL(key)}}" showOutline="{{VAL($sectionicons::Plex=false|Basic=true|Fanart=true|Custom=true)}}" alwaysShowTitles="true" featured="{{VAL($sectionicons::Plex=false|Basic=true|Fanart=true|Custom=true)}}"
+              <moviePoster id="{{VAL(key)}}" showOutline="true" alwaysShowTitles="true" featured="true"
                             onPlay="atv.loadURL('{{URL(key:::PlexConnect={{EVAL('{{VAL(scanner)}}'.replace(' ', '_'))}})}}')"
                             onSelect="atv.loadURL('{{URL(key:::PlexConnect={{EVAL('{{VAL(scanner)}}'.replace(' ', '_'))}})}}')"
                             onHoldSelect="sectionHoldSelect('{{VAL(key)}}', '{{URL(#searchKey)}}', '{{VAL(#serverName)}}', '{{URL(refreshKey)}}', '{{VAL(title)}}')">
@@ -48,11 +48,8 @@
               {{VAR(sections:NoKey:TRUE)}}  <!--within COPY this sets the var to TRUE-->
               <title>{{VAL(title)}}</title>
               <subtitle>&#x00AD;</subtitle><!--bugfix to prevent different poster sizes-->
-              <image>{{URL(:/thumbnails/Images/Icons/grid/{{VAL(type)}}.png)}}</image>{{CUT($sectionicons::Basic=|Plex=CUT|Fanart=CUT|Custom=CUT)}}
-              <image>{{IMAGEURL(thumb::768)}}</image>{{CUT($sectionicons::Basic=CUT|Plex=|Fanart=CUT|Custom=CUT)}}
-              <image>{{IMAGEURL(art::768)}}</image>{{CUT($sectionicons::Basic=CUT|Plex=CUT|Fanart=|Custom=CUT)}}
-              <image>{{URL(:/thumbnails/Images/Icons//grid/custom/{{EVAL("{{VAL(title)}}".replace(' ', ''))}}.png)}}</image>{{CUT($sectionicons::Basic=CUT|Plex=CUT|Fanart=CUT|Custom=)}}
-              <defaultImage>resource://{{VAL($sectionicons::Plex=Square|Basic=16X9|Fanart=16X9|Custom=16X9)}}.png</defaultImage>
+              <image>{{URL(:/thumbnails/Images/Icons/grid/{{VAL(type)}}.png)}}</image>
+              <defaultImage>resource://16X9.png</defaultImage>
             </moviePoster>
               </items>
             </grid>
@@ -70,7 +67,7 @@
          <title>{{TEXT(On Deck)}}</title>
        </collectionDivider>{{CUT(@OnDeck/Server/size:CUT:0=CUT|1=)}}
 
-       <shelf id="shelf_2" columnCount="5">
+       <shelf id="shelf_1" columnCount="5">
           <sections>
             <shelfSection>
               <items>
@@ -80,7 +77,8 @@
                               onHoldSelect="scrobbleMenu('{{URL(key:::PlexConnect=Scrobble_Menu)}}')">
                  {{COPY(Video)}}
                  <title>{{VAL(title)}} ({{VAL(year)}})</title>{{CUT(type:CUT:episode=CUT|movie=)}}
-                 <title>{{TEXT(Season)}} {{VAL(parentIndex)}} • {{TEXT(Episode)}} {{VAL(index)}}</title>{{CUT(type::episode=|movie=CUT)}}                <image>{{IMAGEURL({{VAL(type::movie=thumb|episode=grandparentThumb)}}::768)}}</image>
+                 <title>{{TEXT(Season)}} {{VAL(parentIndex)}} • {{TEXT(Episode)}} {{VAL(index)}}</title>{{CUT(type::episode=|movie=CUT)}}
+                 <image>{{IMAGEURL({{VAL(type::movie=thumb|episode=grandparentThumb)}}::768)}}</image>
                  <defaultImage>resource://Poster.png</defaultImage>
                 </goldenPoster>
               </items>
@@ -97,7 +95,7 @@
          <title>{{TEXT(Recently Added Movies)}}</title>
       </collectionDivider>{{CUT(@RecentlyAdded/Server/size:CUT:0=CUT|1=)}}
 
-      <shelf id="shelf_4" columnCount="5">
+      <shelf id="shelf_2" columnCount="5">
         <sections>
           <shelfSection>
             <items>
@@ -108,7 +106,7 @@
                {{COPY(Video)}}
                {{VAR(items:NoKey:TRUE)}} <!--within COPY this sets the var to TRUE-->
                <title>{{VAL(title)}} ({{VAL(year:&#x00AD;)}})</title>
-               <image>{{IMAGEURL(thumb::384)}}</image>
+               <image>{{IMAGEURL(thumb::768)}}</image>
                <defaultImage>resource://Poster.png</defaultImage>
              </goldenPoster>
             </items>
@@ -118,33 +116,57 @@
     </__COPY__>
 
 
-    <__COPY__>
-    {{COPY(@RecentlyAdded/Server:size::0=|1=COPY)}}
-     <collectionDivider alignment="left" accessibilityLabel="Recently Added">
-        <title>{{TEXT(Recently Added Television)}}</title>
-     </collectionDivider>{{CUT(@RecentlyAdded/Server/size:CUT:0=CUT|1=)}}
+   <__COPY__>
+   {{COPY(@RecentlyAdded/Server:size::0=|1=COPY)}}
+    <collectionDivider alignment="left" accessibilityLabel="Recently Added">
+       <title>{{TEXT(Recently Added Television)}}</title>
+    </collectionDivider>{{CUT(@RecentlyAdded/Server/size:CUT:0=CUT|1=)}}
 
-     <shelf id="shelf_3" columnCount="5">
-       <sections>
-         <shelfSection>
-           <items>
-             <goldenPoster id="{{VAL(key)}}" featured="true" alwaysShowTitles="{{VAL($postertitles::Highlighted Only=false|Show All=true)}}"
-                           onPlay="atv.loadURL('{{URL(key:::includeExtras=1&amp;PlexConnect=TVShow_Episode_List)}}')"
-                           onSelect="atv.loadURL('{{URL(key:::includeExtras=1&amp;PlexConnect=TVShow_Episode_List)}}')"
-                         onHoldSelect="scrobbleMenu('{{URL(key:::PlexConnect=Scrobble_Menu)}}')">
-              {{COPY(Directory:type::album=|season=COPY)}}
-              {{VAR(items:NoKey:TRUE)}} <!--within COPY this sets the var to TRUE-->
-              <title>{{VAL(title)}}</title>
-              <badgeCount>{{unwatchedCountGrid(leafCount:0:viewedLeafCount:0)}}</badgeCount>{{CUT($showunwatched::False=CUT|True=)}}
-              <image>{{IMAGEURL(thumb::384)}}</image>
-              <defaultImage>resource://Poster.png</defaultImage>
-            </goldenPoster>
-           </items>
-          </shelfSection>
-        </sections>
-      </shelf>{{CUT(@RecentlyAdded/Server/size:CUT:0=CUT|1=)}}
-   </__COPY__>
+    <shelf id="shelf_3" columnCount="5">
+      <sections>
+        <shelfSection>
+          <items>
+            <goldenPoster id="{{VAL(key)}}" featured="true" alwaysShowTitles="{{VAL($postertitles::Highlighted Only=false|Show All=true)}}"
+                          onPlay="atv.loadURL('{{URL(key:::includeExtras=1&amp;PlexConnect=TVShow_Episode_List)}}')"
+                          onSelect="atv.loadURL('{{URL(key:::includeExtras=1&amp;PlexConnect=TVShow_Episode_List)}}')"
+                        onHoldSelect="scrobbleMenu('{{URL(key:::PlexConnect=Scrobble_Menu)}}')">
+             {{COPY(Directory:type::album=|season=COPY)}}
+             {{VAR(items:NoKey:TRUE)}} <!--within COPY this sets the var to TRUE-->
+             <title>{{VAL(title)}}</title>
+             <badgeCount>{{unwatchedCountGrid(leafCount:0:viewedLeafCount:0)}}</badgeCount>{{CUT($showunwatched::False=CUT|True=)}}
+             <image>{{IMAGEURL(thumb::768)}}</image>
+             <defaultImage>resource://Poster.png</defaultImage>
+           </goldenPoster>
+          </items>
+         </shelfSection>
+       </sections>
+     </shelf>{{CUT(@RecentlyAdded/Server/size:CUT:0=CUT|1=)}}
+  </__COPY__>
 
+  <__COPY__>
+  {{COPY(@RecentlyAdded/Server:size::0=|1=COPY)}}
+   <collectionDivider alignment="left" accessibilityLabel="Recently Added">
+      <title>{{TEXT(Recently Added Music)}}</title>
+   </collectionDivider>{{CUT(@RecentlyAdded/Server/size:CUT:0=CUT|1=)}}
+
+   <shelf id="shelf_4" columnCount="6">
+     <sections>
+       <shelfSection>
+         <items>
+           <fourByThreePoster id="{{VAL(key)}}" featured="true" alwaysShowTitles="{{VAL($postertitles::Highlighted Only=false|Show All=true)}}"
+                         onPlay="atv.loadURL('{{URL(key:::includeRelated=1&amp;PlexConnect=Music_Track)}}')"
+                         onSelect="atv.loadURL('{{URL(key:::includeRelated=1&amp;PlexConnect=Music_Track)}}')">
+            {{COPY(Directory:type::season=|album=COPY|artist=COPY)}}
+            {{VAR(items:NoKey:TRUE)}} <!--within COPY this sets the var to TRUE-->
+            <title>{{VAL(parentTitle)}}</title>
+            <image>{{IMAGEURL(thumb::384)}}</image>
+            <defaultImage>resource://Poster.png</defaultImage>
+          </fourByThreePoster>
+         </items>
+        </shelfSection>
+      </sections>
+    </shelf>{{CUT(@RecentlyAdded/Server/size:CUT:0=CUT|1=)}}
+ </__COPY__>
 
 
     </items>
