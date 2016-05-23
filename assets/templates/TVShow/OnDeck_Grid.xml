@@ -40,7 +40,7 @@
                             onPlay="atv.loadURL('{{URL(key:::PlexConnect=Play_Video_Pause&amp;PlexConnectRatingKey={{VAL(ratingKey)}})}}')"
                             onSelect="atv.loadURL('{{URL(key:::PlexConnect=TVShow_PrePlay)}}')"
                             onHoldSelect="scrobbleMenu('{{URL(key:::PlexConnect=Scrobble_MenuTVOnDeck)}}')">
-                  {{COPY(@OnDeck/Video,7,1)}}
+                  {{COPY(@OnDeck/Video)}}
                   {{VAR(items:NoKey:TRUE)}}  <!--within COPY this sets the var to TRUE-->
                   <title>{{TEXT(S)}}{{VAL(parentIndex)}} · {{TEXT(E)}}{{VAL(index)}} - {{VAL(title)}}</title>
                   <image>{{IMAGEURL(grandparentThumb::768)}}</image>
@@ -65,7 +65,7 @@
                             onPlay="atv.loadURL('{{URL(key:::PlexConnect=Play_Video_Pause&amp;PlexConnectRatingKey={{VAL(ratingKey)}})}}')"
                             onSelect="atv.loadURL('{{URL(key:::PlexConnect=TVShow_PrePlay)}}')"
                             onHoldSelect="scrobbleMenu('{{URL(key:::PlexConnect=Scrobble_MenuTVOnDeck)}}')">
-                  {{COPY(@RecentlyAired/Video,7,1)}}
+                  {{COPY(@RecentlyAired/Video)}}
                   {{VAR(items:NoKey:TRUE)}}  <!--within COPY this sets the var to TRUE-->
                   <title>{{TEXT(S)}}{{VAL(parentIndex)}} · {{TEXT(E)}}{{VAL(index)}} - {{VAL(title)}}</title>
                   <image>{{IMAGEURL(grandparentThumb::768)}}</image>
@@ -89,7 +89,7 @@
                             onPlay="atv.loadURL('{{URL(key:::PlexConnect=Play_Video_Pause&amp;PlexConnectRatingKey={{VAL(ratingKey)}})}}')"
                             onSelect="atv.loadURL('{{URL(key:::PlexConnect=TVShow_PrePlay)}}')"
                             onHoldSelect="scrobbleMenu('{{URL(key:::PlexConnect=Scrobble_MenuTVOnDeck)}}')">
-                  {{COPY(@RecentlyAdded/Video,7,1)}}
+                  {{COPY(@RecentlyAdded/Video)}}
                   {{VAR(items:NoKey:TRUE)}}  <!--within COPY this sets the var to TRUE-->
                   <title>{{TEXT(S)}}{{VAL(parentIndex)}} · {{TEXT(E)}}{{VAL(index)}} - {{VAL(title)}}</title>
                   <image>{{IMAGEURL(parentThumb::768)}}</image>
@@ -113,7 +113,7 @@
                             onPlay="atv.loadURL('{{URL(key:::PlexConnect=Play_Video_Pause&amp;PlexConnectRatingKey={{VAL(ratingKey)}})}}')"
                             onSelect="atv.loadURL('{{URL(key:::PlexConnect=TVShow_PrePlay)}}')"
                             onHoldSelect="scrobbleMenu('{{URL(key:::PlexConnect=Scrobble_MenuTVOnDeck)}}')">
-                  {{COPY(@RecentlyViewedEpisodes/Video,7,1)}}
+                  {{COPY(@RecentlyViewedEpisodes/Video)}}
                   {{VAR(items:NoKey:TRUE)}}  <!--within COPY this sets the var to TRUE-->
                   <title>{{TEXT(S)}}{{VAL(parentIndex)}} • {{TEXT(E)}}{{VAL(index)}} - {{VAL(title)}}</title>
                   <image>{{IMAGEURL(grandparentThumb::384)}}</image>

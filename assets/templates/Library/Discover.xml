@@ -5,8 +5,10 @@
   </head>
 
   <body>
-      {{ADDXML(OnDeck::/library/onDeck?X-Plex-Container-Start=0&amp;X-Plex-Container-Size=40)}}
-      {{ADDXML(RecentlyAdded::/library/recentlyAdded?X-Plex-Container-Start=0&amp;X-Plex-Container-Size=40)}}
+      {{ADDXML(OnDeck::/library/onDeck?X-Plex-Container-Start=0&amp;X-Plex-Container-Size=20)}}
+      {{ADDXML(RecentlyAddedShows::/library/recentlyAdded?X-Plex-Container-Start=0&amp;X-Plex-Container-Size=60)}}
+      {{ADDXML(RecentlyAddedMovies::/library/recentlyAdded?X-Plex-Container-Start=0&amp;X-Plex-Container-Size=60)}}
+      {{ADDXML(RecentlyAddedMusic::/library/recentlyAdded?X-Plex-Container-Start=0&amp;X-Plex-Container-Size=60)}}
       {{VAR(sections:NoKey:FALSE)}}  <!--this sets the var to FALSE-->
       {{VAR(items:NoKey:FALSE)}}
 
@@ -90,10 +92,10 @@
 
      <!--Recently Added-->
      <__COPY__>
-      {{COPY(@RecentlyAdded/Server:size::0=|1=COPY)}}
+      {{COPY(@RecentlyAddedMovies/Server:size::0=|1=COPY)}}
       <collectionDivider alignment="left" accessibilityLabel="Recently Added">
          <title>{{TEXT(Recently Added Movies)}}</title>
-      </collectionDivider>{{CUT(@RecentlyAdded/Server/size:CUT:0=CUT|1=)}}
+      </collectionDivider>{{CUT(@RecentlyAddedMovies/Server/size:CUT:0=CUT|1=)}}
 
       <shelf id="shelf_2" columnCount="5">
         <sections>
@@ -112,15 +114,15 @@
             </items>
           </shelfSection>
         </sections>
-      </shelf>{{CUT(@RecentlyAdded/Server/size:CUT:0=CUT|1=)}}
+      </shelf>{{CUT(@RecentlyAddedMovies/Server/size:CUT:0=CUT|1=)}}
     </__COPY__>
 
 
    <__COPY__>
-   {{COPY(@RecentlyAdded/Server:size::0=|1=COPY)}}
+   {{COPY(@RecentlyAddedShows/Server:size::0=|1=COPY)}}
     <collectionDivider alignment="left" accessibilityLabel="Recently Added">
        <title>{{TEXT(Recently Added Television)}}</title>
-    </collectionDivider>{{CUT(@RecentlyAdded/Server/size:CUT:0=CUT|1=)}}
+    </collectionDivider>{{CUT(@RecentlyAddedShows/Server/size:CUT:0=CUT|1=)}}
 
     <shelf id="shelf_3" columnCount="5">
       <sections>
@@ -140,14 +142,14 @@
           </items>
          </shelfSection>
        </sections>
-     </shelf>{{CUT(@RecentlyAdded/Server/size:CUT:0=CUT|1=)}}
+     </shelf>{{CUT(@RecentlyAddedShows/Server/size:CUT:0=CUT|1=)}}
   </__COPY__>
 
   <__COPY__>
-  {{COPY(@RecentlyAdded/Server:size::0=|1=COPY)}}
+  {{COPY(@RecentlyAddedMusic/Server:size::0=|1=COPY)}}
    <collectionDivider alignment="left" accessibilityLabel="Recently Added">
       <title>{{TEXT(Recently Added Music)}}</title>
-   </collectionDivider>{{CUT(@RecentlyAdded/Server/size:CUT:0=CUT|1=)}}
+   </collectionDivider>{{CUT(@RecentlyAddedMusic/Server/size:CUT:0=CUT|1=)}}
 
    <shelf id="shelf_4" columnCount="6">
      <sections>
@@ -159,13 +161,13 @@
             {{COPY(Directory:type::season=|album=COPY|artist=COPY)}}
             {{VAR(items:NoKey:TRUE)}} <!--within COPY this sets the var to TRUE-->
             <title>{{VAL(parentTitle)}}</title>
-            <image>{{IMAGEURL(thumb::384)}}</image>
-            <defaultImage>resource://Poster.png</defaultImage>
+            <image>{{IMAGEURL(thumb::768)}}</image>
+            <defaultImage>resource://Square.png</defaultImage>
           </fourByThreePoster>
          </items>
         </shelfSection>
       </sections>
-    </shelf>{{CUT(@RecentlyAdded/Server/size:CUT:0=CUT|1=)}}
+    </shelf>{{CUT(@RecentlyAddedMusic/Server/size:CUT:0=CUT|1=)}}
  </__COPY__>
 
 
