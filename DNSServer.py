@@ -92,7 +92,7 @@ def HostToDNS(Host):
             next = len(DNSdata)-1
         DNSdata = DNSdata[:i] + chr(next-i-1) + DNSdata[i+1:]  # python 2.6: DNSdata[i] = next-i-1
         i = next
-    
+
     return DNSdata
 
 def DNSToHost(DNSdata, i, followlink=True):
@@ -123,24 +123,24 @@ def printDNSdata(paket):
     arcount = (ord(paket[10])<<8)+ord(paket[11])
     print "Count - QD, AN, NS, AR:", qdcount, ancount, nscount, arcount
     adr = 12
-    
+
     # QDCOUNT (query)
     for i in range(qdcount):
         print "QUERY"
         host = DNSToHost(paket, adr)
-        
+
         """
         for j in range(len(host)+2+4):
             print ord(paket[adr+j]),
         print
         """
-        
+
         adr = adr + len(host) + 2
         print host
         print "type "+str((ord(paket[adr+0])<<8)+ord(paket[adr+1]))
         print "class "+str((ord(paket[adr+2])<<8)+ord(paket[adr+3]))
         adr = adr + 4
-    
+
     # ANCOUNT (resource record)
     for i in range(ancount):
         print "ANSWER"
@@ -182,7 +182,7 @@ def printDNSdata_raw(DNSdata):
             print
         print "{0:02x}".format(ord(DNSdata[i])),
     print
-    
+
     # printable characters
     for i in range(len(DNSdata)):
         if i % 16==0:
@@ -196,13 +196,13 @@ def printDNSdata_raw(DNSdata):
 
 
 def parseDNSdata(paket):
-    
+
     def getWord(DNSdata, addr):
         return (ord(DNSdata[addr])<<8)+ord(DNSdata[addr+1])
-    
+
     DNSstruct = {}
     adr = 0
-    
+
     # header
     DNSstruct['head'] = { \
                     'id': getWord(paket, adr+0), \
@@ -212,7 +212,7 @@ def parseDNSdata(paket):
                     'nscnt': getWord(paket, adr+8), \
                     'arcnt': getWord(paket, adr+10) }
     adr = adr + 12
-    
+
     # query
     DNSstruct['query'] = []
     for i in range(DNSstruct['head']['qdcnt']):
@@ -224,7 +224,7 @@ def parseDNSdata(paket):
         DNSstruct['query'][i]['type'] = getWord(paket, adr+0)
         DNSstruct['query'][i]['class'] = getWord(paket, adr+2)
         adr = adr + 4
-    
+
     # resource records
     DNSstruct['resrc'] = []
     for i in range(DNSstruct['head']['ancnt'] + DNSstruct['head']['nscnt'] + DNSstruct['head']['arcnt']):
@@ -248,17 +248,17 @@ def parseDNSdata(paket):
             for j in range(DNSstruct['resrc'][i]['rdlen']):
                 DNSstruct['resrc'][i]['rdata'].append( paket[adr+j] )
             adr = adr + DNSstruct['resrc'][i]['rdlen']
-    
+
     return DNSstruct
 
 def encodeDNSstruct(DNSstruct):
-    
+
     def appendWord(DNSdata, val):
         DNSdata.append((val>>8) & 0xFF)
         DNSdata.append( val     & 0xFF)
-    
+
     DNS = bytearray()
-    
+
     # header
     appendWord(DNS, DNSstruct['head']['id'])
     appendWord(DNS, DNSstruct['head']['flags'])
@@ -266,14 +266,14 @@ def encodeDNSstruct(DNSstruct):
     appendWord(DNS, DNSstruct['head']['ancnt'])
     appendWord(DNS, DNSstruct['head']['nscnt'])
     appendWord(DNS, DNSstruct['head']['arcnt'])
-    
+
     # query
     for i in range(DNSstruct['head']['qdcnt']):
         host = HostToDNS(DNSstruct['query'][i]['host'])
         DNS.extend(bytearray(host))
         appendWord(DNS, DNSstruct['query'][i]['type'])
         appendWord(DNS, DNSstruct['query'][i]['class'])
-        
+
     # resource records
     for i in range(DNSstruct['head']['ancnt'] + DNSstruct['head']['nscnt'] + DNSstruct['head']['arcnt']):
         host = HostToDNS(DNSstruct['resrc'][i]['host'])  # no 'packing'/link - todo?
@@ -283,19 +283,19 @@ def encodeDNSstruct(DNSstruct):
         appendWord(DNS, (DNSstruct['resrc'][i]['ttl']>>16) & 0xFFFF)
         appendWord(DNS, (DNSstruct['resrc'][i]['ttl']    ) & 0xFFFF)
         appendWord(DNS, DNSstruct['resrc'][i]['rdlen'])
-        
+
         if DNSstruct['resrc'][i]['type']==5:  # 5=redirect, hostname
             host = HostToDNS(DNSstruct['resrc'][i]['rdata'])
             DNS.extend(bytearray(host))
         else:
             DNS.extend(DNSstruct['resrc'][i]['rdata'])
-    
+
     return DNS
 
 def printDNSstruct(DNSstruct):
     for i in range(DNSstruct['head']['qdcnt']):
         print "query:", DNSstruct['query'][i]['host']
-    
+
     for i in range(DNSstruct['head']['ancnt'] + DNSstruct['head']['nscnt'] + DNSstruct['head']['arcnt']):
         print "resrc:",
         print DNSstruct['resrc'][i]['host']
@@ -314,13 +314,13 @@ def printDNSstruct(DNSstruct):
 def Run(cmdPipe, param):
     if not __name__ == '__main__':
         signal.signal(signal.SIGINT, signal.SIG_IGN)
-    
+
     dinit(__name__, param)  # init logging, DNSServer process
-    
+
     cfg_IP_self = param['IP_self']
     cfg_Port_DNSServer = param['CSettings'].getSetting('port_dnsserver')
     cfg_IP_DNSMaster = param['CSettings'].getSetting('ip_dnsmaster')
-    
+
     try:
         DNS = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         DNS.settimeout(5.0)
@@ -328,21 +328,21 @@ def Run(cmdPipe, param):
     except Exception, e:
         dprint(__name__, 0, "Failed to create socket on UDP port {0}: {1}", cfg_Port_DNSServer, e)
         sys.exit(1)
-    
+
     intercept = [param['HostToIntercept']]
     restrain = []
     if param['CSettings'].getSetting('intercept_atv_icon')=='True':
         intercept.append('a1.phobos.apple.com')
     if param['CSettings'].getSetting('prevent_atv_update')=='True':
         restrain = ['mesu.apple.com', 'appldnld.apple.com', 'appldnld.apple.com.edgesuite.net']
-    
+
     dprint(__name__, 0, "***")
     dprint(__name__, 0, "DNSServer: Serving DNS on {0} port {1}.", cfg_IP_self, cfg_Port_DNSServer)
     dprint(__name__, 1, "HostToIntercept: {0} => {1}", intercept, cfg_IP_self)
     dprint(__name__, 1, "restrain: {0} => 127.0.0.1", restrain)
     dprint(__name__, 1, "forward other to higher level DNS: "+cfg_IP_DNSMaster)
     dprint(__name__, 0, "***")
-    
+
     try:
         while True:
             # check command
@@ -350,25 +350,27 @@ def Run(cmdPipe, param):
                 cmd = cmdPipe.recv()
                 if cmd=='shutdown':
                     break
-            
+
             # do your work (with timeout)
             try:
                 data, addr = DNS.recvfrom(1024)
                 dprint(__name__, 1, "DNS request received!")
                 dprint(__name__, 1, "Source: "+str(addr))
-                
+
                 #print "incoming:"
                 #printDNSdata(data)
-                
+
                 # analyse DNS request
                 # todo: how about multi-query messages?
                 opcode = (ord(data[2]) >> 3) & 0x0F # Opcode bits (query=0, inversequery=1, status=2)
                 if opcode == 0:                     # Standard query
                     domain = DNSToHost(data, 12)
                     dprint(__name__, 1, "Domain: "+domain)
-                
+
                 paket=''
                 if domain in intercept:
+                	cfg_IP_self=param['CSettings'].getSetting('dns_public')
+
                     dprint(__name__, 1, "***intercept request")
                     paket+=data[:2]         # 0:1 - ID
                     paket+="\x81\x80"       # 2:3 - flags
@@ -381,7 +383,7 @@ def Run(cmdPipe, param):
                     paket+='\x00\x01\x00\x01\x00\x00\x00\x3c\x00\x04'    # response type, ttl and resource data length -> 4 bytes
                     paket+=str.join('',map(lambda x: chr(int(x)), cfg_IP_self.split('.'))) # 4bytes of IP
                     dprint(__name__, 1, "-> DNS response: "+cfg_IP_self)
-                
+
                 elif domain in restrain:
                     dprint(__name__, 1, "***restrain request")
                     paket+=data[:2]         # 0:1 - ID
@@ -395,36 +397,36 @@ def Run(cmdPipe, param):
                     paket+='\x00\x01\x00\x01\x00\x00\x00\x3c\x00\x04'    # response type, ttl and resource data length -> 4 bytes
                     paket+='\x7f\x00\x00\x01'  # 4bytes of IP - 127.0.0.1, loopback
                     dprint(__name__, 1, "-> DNS response: "+cfg_IP_self)
-                
+
                 else:
                     dprint(__name__, 1, "***forward request")
-                    
+
                     try:
                         DNS_forward = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                         DNS_forward.settimeout(5.0)
                     except Exception, e:
                         dprint(__name__, 0, "Failed to create socket for DNS_forward): {0}", e)
                         continue
-                    
+
                     DNS_forward.sendto(data, (cfg_IP_DNSMaster, 53))
                     paket, addr_master = DNS_forward.recvfrom(1024)
                     DNS_forward.close()
                     # todo: double check: ID has to be the same!
                     # todo: spawn thread to wait in parallel
                     dprint(__name__, 1, "-> DNS response from higher level")
-                
+
                 #print "-> respond back:"
                 #printDNSdata(paket)
-                
+
                 # todo: double check: ID has to be the same!
                 DNS.sendto(paket, addr)
-            
+
             except socket.timeout:
                 pass
-            
+
             except socket.error as e:
                 dprint(__name__, 1, "Warning: DNS error ({0}): {1}", e.errno, e.strerror)
-            
+
     except KeyboardInterrupt:
         signal.signal(signal.SIGINT, signal.SIG_IGN)  # we heard you!
         dprint(__name__, 0, "^C received.")
@@ -436,13 +438,13 @@ def Run(cmdPipe, param):
 
 if __name__ == '__main__':
     cmdPipe = Pipe()
-    
+
     cfg = Settings.CSettings()
     param = {}
     param['CSettings'] = cfg
-    
+
     param['IP_self'] = '192.168.178.20'  # IP_self?
     param['baseURL'] = 'http://'+ param['IP_self'] +':'+ cfg.getSetting('port_webserver')
     param['HostToIntercept'] = 'www.icloud.com'
-    
+
     Run(cmdPipe[1], param)
