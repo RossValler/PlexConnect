@@ -369,7 +369,7 @@ def Run(cmdPipe, param):
 
                 paket=''
                 if domain in intercept:
-                	cfg_IP_self=param['CSettings'].getSetting('dns_public')
+                    cfg_IP_self=param['CSettings'].getSetting('dns_public')
 
                     dprint(__name__, 1, "***intercept request")
                     paket+=data[:2]         # 0:1 - ID
