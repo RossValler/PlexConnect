@@ -72,6 +72,7 @@ import socket
 import struct
 from multiprocessing import Pipe  # inter process communication
 import signal
+from os import environ # environment variable override
 
 import Settings
 from Debug import *  # dprint()
@@ -369,7 +370,8 @@ def Run(cmdPipe, param):
 
                 paket=''
                 if domain in intercept:
-                    cfg_IP_self=param['CSettings'].getSetting('dns_public')
+                    cfg_IP_self=os.getenv('PUBLIC_DNS_IP', cfg_IP_self)
+
 
                     dprint(__name__, 1, "***intercept request")
                     paket+=data[:2]         # 0:1 - ID
