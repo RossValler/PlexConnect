@@ -72,7 +72,7 @@ import socket
 import struct
 from multiprocessing import Pipe  # inter process communication
 import signal
-from os import environ # environment variable override
+import os # environment variable override
 
 import Settings
 from Debug import *  # dprint()
